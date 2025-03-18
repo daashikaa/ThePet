@@ -1,9 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>The Pet</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница | The Pet</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Подключение стилей -->
 </head>
 <body>
-Hello, STESHKA!
+<!-- Шапка страницы -->
+<header>
+    <div class="logo">
+        <img src="logo.png" alt="Логотип The Pet">
+        <h1>The Pet</h1>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#about">О приложении</a></li>
+            <li><a href="#features">Возможности</a></li>
+            <li><a href="singup_login.html">Вход и регистрация</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Основной контент -->
+<main>
+    <!-- Приветственный блок -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Добро пожаловать в The Pet!</h2>
+            <p>Удобное приложение для ухода за вашими питомцами. Ведите дневники, добавляйте напоминания и многое другое.</p>
+            <a href="singup_login.html" class="button">Начать сейчас</a>
+        </div>
+        <div class="hero-image">
+            <img src="pets-hero.png" alt="Изображение питомцев">
+        </div>
+    </section>
+
+    <!-- О приложении -->
+    <section id="about" class="about">
+        <h2>О The Pet</h2>
+        <p>The Pet — это ваш надежный помощник в заботе о питомцах. Создавайте профили для своих животных, ведите дневники и никогда не забывайте о важных событиях.</p>
+    </section>
+
+    <!-- Возможности -->
+    <section id="features" class="features">
+        <h2>Возможности</h2>
+        <div class="features-grid">
+            <div class="feature">
+                <img src="icon-pets.png" alt="Иконка питомцев">
+                <h3>Мои питомцы</h3>
+                <p>Добавляйте и управляйте профилями ваших питомцев.</p>
+            </div>
+            <div class="feature">
+                <img src="icon-diary.png" alt="Иконка дневника">
+                <h3>Дневник</h3>
+                <p>Ведите записи о здоровье и активности ваших питомцев.</p>
+            </div>
+            <div class="feature">
+                <img src="icon-calendar.png" alt="Иконка календаря">
+                <h3>Календарь</h3>
+                <p>Добавляйте напоминания о важных событиях.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Подвал страницы -->
+<footer>
+    <div class="footer-content">
+        <p>&copy; 2025 The Pet. Все права защищены.</p>
+        <ul>
+            <li><a href="#privacy">Политика конфиденциальности</a></li>
+            <li><a href="#terms">Условия использования</a></li>
+            <li><a href="#contact">Контакты</a></li>
+        </ul>
+    </div>
+</footer>
 </body>
 </html>

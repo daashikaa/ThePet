@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Создание таблицы User -->
+    <changeSet id="1" author="kaydy">
+        <createTable tableName="user">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="email" type="varchar(255)"/>
+            <column name="password" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Создание таблицы Pet -->
+    <changeSet id="2" author="kaydy">
+        <createTable tableName="pet">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="species" type="varchar(255)"/>
+            <column name="breed" type="varchar(255)"/>
+            <column name="birth_date" type="date"/>
+            <column name="owner_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_pet_owner" references="user(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Создание таблицы Note -->
+    <changeSet id="3" author="kaydy">
+        <createTable tableName="note">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="type" type="varchar(255)"/>
+            <column name="time" type="datetime"/>
+            <column name="body" type="text"/>
+            <column name="pet_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_note_pet" references="pet(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Создание таблицы Reminder -->
+    <changeSet id="4" author="kaydy">
+        <createTable tableName="reminder">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="event" type="varchar(255)"/>
+            <column name="date" type="datetime"/>
+            <column name="counted_date" type="datetime"/>
+            <column name="pet_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_reminder_pet" references="pet(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

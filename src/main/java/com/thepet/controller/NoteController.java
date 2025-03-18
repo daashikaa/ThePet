@@ -14,7 +14,7 @@ public class NoteController {
 
     @GetMapping("/notes")
     public String notes(Model model) {
-        model.addAttribute("notes", noteService.listNotes());
+//        model.addAttribute("notes", noteService.listNotes());
         return "notes";
     }
 
