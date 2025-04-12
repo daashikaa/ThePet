@@ -20,9 +20,6 @@ public class Pet {
     @Column(name = "id")
     private Long id;
 
-//    @Column(name = "owner_id")
-//    private Long ownerId;
-
     @Column(name = "name")
     private String name;
 

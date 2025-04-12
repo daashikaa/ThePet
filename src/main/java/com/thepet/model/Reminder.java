@@ -19,9 +19,6 @@ public class Reminder {
     @Column(name = "id")
     private Long id;
 
-//    @Column(name = "pet_id")
-//    private Long petId;
-
     @Column(name = "event")
     private String event;
 

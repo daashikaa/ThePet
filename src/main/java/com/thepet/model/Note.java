@@ -17,9 +17,6 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-//    @Column(name = "pet_id")
-//    private Long petId;
-
     @Column(name = "type")
     private String type;
 
