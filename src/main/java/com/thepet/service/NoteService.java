@@ -1,5 +1,6 @@
 package com.thepet.service;
 
+import com.thepet.exception.ResourceNotFoundException;
 import com.thepet.model.Note;
 import com.thepet.model.Pet;
 import com.thepet.repositories.NoteRepository;
@@ -30,6 +31,16 @@ public class NoteService {
     }
 
     public void deleteNote(Long noteId) {
+        if (!noteRepository.existsById(noteId)) {
+            throw new ResourceNotFoundException("Note not found with id: " + noteId);
+        }
         noteRepository.deleteById(noteId);
+    }
+
+    public Note updateNote(Note note) {
+        if (!noteRepository.existsById(note.getId())) {
+            throw new ResourceNotFoundException("Note not found with id: " + note.getId());
+        }
+        return noteRepository.save(note);
     }
 }

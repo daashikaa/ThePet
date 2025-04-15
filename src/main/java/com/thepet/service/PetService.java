@@ -1,5 +1,6 @@
 package com.thepet.service;
 
+import com.thepet.exception.ResourceNotFoundException;
 import com.thepet.model.Pet;
 import com.thepet.model.User;
 import com.thepet.repositories.PetRepository;
@@ -33,6 +34,14 @@ public class PetService {
     }
 
     public void deletePet(Long petId) {
+        if (!petRepository.existsById(petId)) {
+            throw new ResourceNotFoundException("Pet not found with id: " + petId);
+        }
         petRepository.deleteById(petId);
+    }
+
+
+    public Pet updatePet(Pet pet) {
+        return petRepository.save(pet);
     }
 }

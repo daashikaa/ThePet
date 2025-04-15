@@ -1,5 +1,6 @@
 package com.thepet.service;
 
+import com.thepet.exception.ResourceNotFoundException;
 import com.thepet.model.User;
 import com.thepet.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,6 +24,20 @@ public class UserService {
     }
 
     public User saveUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User not found with id: " + userId);
+        }
+        userRepository.deleteById(userId);
+    }
+
+    public User updateUser(User user) {
+        if (!userRepository.existsById(user.getId())) {
+            throw new ResourceNotFoundException("User not found with id: " + user.getId());
+        }
         return userRepository.save(user);
     }
 }

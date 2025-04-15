@@ -1,5 +1,6 @@
 package com.thepet.service;
 
+import com.thepet.exception.ResourceNotFoundException;
 import com.thepet.model.Reminder;
 import com.thepet.repositories.ReminderRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,16 @@ public class ReminderService {
     }
 
     public void deleteReminder(Long reminderId) {
+        if (!reminderRepository.existsById(reminderId)) {
+            throw new ResourceNotFoundException("Reminder not found with id: " + reminderId);
+        }
         reminderRepository.deleteById(reminderId);
+    }
+
+    public Reminder updateReminder(Reminder reminder) {
+        if (!reminderRepository.existsById(reminder.getId())) {
+            throw new ResourceNotFoundException("Reminder not found with id: " + reminder.getId());
+        }
+        return reminderRepository.save(reminder);
     }
 }
