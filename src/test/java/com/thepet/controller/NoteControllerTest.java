@@ -9,9 +9,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,74 +50,53 @@ class NoteControllerTest {
 
     @Test
     void getNotesByPet_ShouldReturnNotesList() {
-        // Arrange
         List<Note> notes = Arrays.asList(testNote);
         when(noteService.getNotesByPet(anyLong())).thenReturn(notes);
 
-        // Act
-        List<Note> result = noteController.getNotesByPet(1L);
+        ResponseEntity<List<Note>> response = noteController.getNotesByPet(1L);
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(testNote, result.get(0));
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals(testNote, response.getBody().get(0));
         verify(noteService, times(1)).getNotesByPet(1L);
     }
 
     @Test
-    void addNote_ShouldCreateNewNote() {
-        // Arrange
+    void addNote_ShouldReturnCreatedStatusAndNote() {
+
         when(noteService.addNote(any(Note.class), anyLong())).thenReturn(testNote);
 
-        // Act
-        Note result = noteController.addNote(testNote, 1L);
 
-        // Assert
-        assertNotNull(result);
-        assertEquals(testNote.getId(), result.getId());
+        ResponseEntity<Note> response = noteController.addNote(testNote, 1L);
+
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(testNote.getId(), response.getBody().getId());
         verify(noteService, times(1)).addNote(testNote, 1L);
     }
 
     @Test
-    void deleteNote_ShouldCallService() {
-        // Act
-        noteController.deleteNote(1L);
+    void deleteNote_ShouldReturnNoContent() {
 
-        // Assert
+        ResponseEntity<Void> response = noteController.deleteNote(1L);
+
+
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
         verify(noteService, times(1)).deleteNote(1L);
     }
 
     @Test
-    void addNote_ShouldReturnCreatedStatus() throws Exception {
-        // Arrange
-        when(noteService.addNote(any(Note.class), anyLong())).thenReturn(testNote);
-
-        // Act
-        Note result = noteController.addNote(testNote, 1L);
-
-        // Assert
-        assertNotNull(result);
-        // The @ResponseStatus annotation should set status to CREATED
-    }
-
-    @Test
-    void deleteNote_ShouldReturnNoContentStatus() {
-        // Act
-        noteController.deleteNote(1L);
-
-        // Assert
-        // The @ResponseStatus annotation should set status to NO_CONTENT
-    }
-
-    @Test
     void getNotesByPet_WithInvalidPetId_ShouldReturnEmptyList() {
-        // Arrange
-        when(noteService.getNotesByPet(anyLong())).thenReturn(List.of());
 
-        // Act
-        List<Note> result = noteController.getNotesByPet(999L);
+        when(noteService.getNotesByPet(anyLong())).thenReturn(Collections.emptyList());
 
-        // Assert
-        assertTrue(result.isEmpty());
+
+        ResponseEntity<List<Note>> response = noteController.getNotesByPet(999L);
+
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody().isEmpty());
     }
 }

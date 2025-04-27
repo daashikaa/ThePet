@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,28 +23,27 @@ public class PetController {
     }
 
     @PostMapping("/{ownerId}")
-    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Создать питомца для пользователя")
-    public Pet createPet(@Valid @RequestBody Pet pet, @PathVariable Long ownerId) {
-        return petService.createPet(pet, ownerId);
+    public ResponseEntity<Pet> createPet(@Valid @RequestBody Pet pet, @PathVariable Long ownerId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(petService.createPet(pet, ownerId));
     }
 
     @GetMapping("/owner/{ownerId}")
     @Operation(summary = "Получить питомцев по владельцу")
-    public List<Pet> getPetsByOwner(@PathVariable Long ownerId) {
-        return petService.getPetsByOwner(ownerId);
+    public ResponseEntity<List<Pet>> getPetsByOwner(@PathVariable Long ownerId) {
+        return ResponseEntity.ok(petService.getPetsByOwner(ownerId));
     }
 
     @GetMapping("/{petId}")
     @Operation(summary = "Получить питомца по ID")
-    public Pet getPetById(@PathVariable Long petId) {
-        return petService.getPetById(petId);
+    public ResponseEntity<Pet> getPetById(@PathVariable Long petId) {
+        return ResponseEntity.ok(petService.getPetById(petId));
     }
 
     @DeleteMapping("/{petId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Удалить питомца")
-    public void deletePet(@PathVariable Long petId) {
+    public ResponseEntity<Void> deletePet(@PathVariable Long petId) {
         petService.deletePet(petId);
+        return ResponseEntity.noContent().build();
     }
 }

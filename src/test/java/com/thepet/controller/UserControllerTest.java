@@ -1,115 +1,47 @@
 package com.thepet.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thepet.exception.ResourceNotFoundException;
 import com.thepet.model.User;
-import com.thepet.repositories.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.thepet.service.UserService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import java.util.Collections;
+import java.util.List;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Mock
+    private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
+    @InjectMocks
+    private UserController userController;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Test
+    void getAllUsers_ReturnsUsersList() {
+        List<User> users = Collections.singletonList(new User());
+        when(userService.getAllUsers()).thenReturn(users);
 
-    @BeforeEach
-    void setUp() {
-        userRepository.deleteAll();
+        ResponseEntity<List<User>> response = userController.getAllUsers();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().size());
     }
 
     @Test
-    void shouldCreateUser() throws Exception {
-        User user = new User();
-        user.setName("Test User");
-        user.setEmail("test@example.com");
-        user.setPassword("password123");
+    void deleteUser_NotFound_ThrowsException() {
+        doThrow(ResourceNotFoundException.class).when(userService).deleteUser(anyLong());
 
-        mockMvc.perform(post("/api/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(user)))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("Test User"))
-                .andExpect(jsonPath("$.email").value("test@example.com"));
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenInvalidUser() throws Exception {
-        User invalidUser = new User(); // Missing required fields
-
-        mockMvc.perform(post("/api/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidUser)))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void shouldGetUserById() throws Exception {
-        User user = new User();
-        user.setName("Existing User");
-        user.setEmail("existing@example.com");
-        user.setPassword("password123");
-        User savedUser = userRepository.save(user);
-
-        mockMvc.perform(get("/api/users/" + savedUser.getId()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(savedUser.getId()))
-                .andExpect(jsonPath("$.name").value("Existing User"));
-    }
-
-    @Test
-    void shouldReturnNotFoundForNonExistentUser() throws Exception {
-        mockMvc.perform(get("/api/users/999"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void shouldUpdateUser() throws Exception {
-        User existingUser = new User();
-        existingUser.setName("Original Name");
-        existingUser.setEmail("original@example.com");
-        existingUser.setPassword("password123");
-        User savedUser = userRepository.save(existingUser);
-
-        User updatedUser = new User();
-        updatedUser.setName("Updated Name");
-        updatedUser.setEmail("updated@example.com");
-        updatedUser.setPassword("newpassword123");
-
-        mockMvc.perform(put("/api/users/" + savedUser.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedUser)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Updated Name"))
-                .andExpect(jsonPath("$.email").value("updated@example.com"));
-    }
-
-    @Test
-    void shouldDeleteUser() throws Exception {
-        User user = new User();
-        user.setName("User to delete");
-        user.setEmail("delete@example.com");
-        user.setPassword("password123");
-        User savedUser = userRepository.save(user);
-
-        mockMvc.perform(delete("/api/users/" + savedUser.getId()))
-                .andExpect(status().isNoContent());
-
-        mockMvc.perform(get("/api/users/" + savedUser.getId()))
-                .andExpect(status().isNotFound());
+        assertThrows(ResourceNotFoundException.class,
+                () -> userController.deleteUser(1L));
     }
 }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,21 +24,20 @@ public class NoteController {
 
     @GetMapping("/pet/{petId}")
     @Operation(summary = "Получить заметки по ID питомца")
-    public List<Note> getNotesByPet(@PathVariable Long petId) {
-        return noteService.getNotesByPet(petId);
+    public ResponseEntity<List<Note>> getNotesByPet(@PathVariable Long petId) {
+        return ResponseEntity.ok(noteService.getNotesByPet(petId));
     }
 
     @PostMapping("/pet/{petId}")
-    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Добавить заметку для питомца")
-    public Note addNote(@Valid @RequestBody Note note, @PathVariable Long petId) {
-        return noteService.addNote(note, petId);
+    public ResponseEntity<Note> addNote(@Valid @RequestBody Note note, @PathVariable Long petId) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(noteService.addNote(note, petId));
     }
 
     @DeleteMapping("/{noteId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Удалить заметку")
-    public void deleteNote(@PathVariable Long noteId) {
+    public ResponseEntity<Void> deleteNote(@PathVariable Long noteId) {
         noteService.deleteNote(noteId);
+        return ResponseEntity.noContent().build();
     }
 }
