@@ -33,13 +33,10 @@ public class AuthController {
         log.info("Logging in user: {}", user.getEmail());
         User dbUser = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
         if (!passwordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
             log.warn("Invalid password for user: {}", user.getEmail());
             throw new RuntimeException("Invalid credentials");
         }
-
-        // Передаем email и роль пользователя
         return jwtService.generateToken(dbUser.getEmail(), dbUser.getRole());
     }
 }
