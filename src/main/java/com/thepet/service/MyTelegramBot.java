@@ -1,5 +1,6 @@
 package com.thepet.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -7,8 +8,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.bots.DefaultBotOptions;
 
+@Slf4j
 @Component
 public class MyTelegramBot extends TelegramLongPollingBot {
 
@@ -17,11 +18,13 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
+        log.debug("Getting bot username");
         return "the_pet_java_bot";
     }
 
     @Override
     public String getBotToken() {
+        log.debug("Getting bot token");
         return botToken;
     }
 
@@ -30,6 +33,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             Message message = update.getMessage();
             String chatId = message.getChatId().toString();
+            log.info("Received message from chat ID: {}", chatId);
 
             SendMessage response = new SendMessage();
             response.setChatId(chatId);
@@ -37,8 +41,9 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
             try {
                 execute(response);
+                log.debug("Response sent to chat ID: {}", chatId);
             } catch (TelegramApiException e) {
-                e.printStackTrace();
+                log.error("Error sending message to chat ID: {}", chatId, e);
             }
         }
     }
